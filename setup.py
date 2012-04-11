@@ -9,13 +9,13 @@
 '''
 from setuptools import setup
 
-import api
+import ups
 
 setup(
     name = 'PyUPS',
-    version = api.__version__,
+    version = ups.__version__,
     license = 'AGPL',
-    author = api.__author__,
+    author = ups.__author__,
     author_email = 'info@openlabs.co.in',
     url = 'http://openlabs.co.in',
 
@@ -27,10 +27,10 @@ setup(
         'ups',
         'ups.tests',
         ],
-    package_dir = {
-        'ups': 'api',
-        'ups.tests': 'tests',
-        },
+#    package_dir = {
+#        'ups': 'api',
+#        'ups.tests': 'tests',
+#        },
     install_requires=[
         'distribute',
         'lxml',
