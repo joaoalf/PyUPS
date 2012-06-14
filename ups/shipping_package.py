@@ -356,11 +356,19 @@ class BaseAPIClient(object):
         except AttributeError:
             return None
         else:
-            raise PyUPSException("%s-%s:%s" % (
-                error.ErrorSeverity.pyval,
-                error.ErrorCode.pyval,
-                error.ErrorDescription.pyval,
-                ))
+            print error.ErrorSeverity.pyval
+            if error.ErrorSeverity.pyval != 'Warning':
+                raise PyUPSException("%s-%s:%s" % (
+                    error.ErrorSeverity.pyval,
+                    error.ErrorCode.pyval,
+                    error.ErrorDescription.pyval,
+                    ))
+            else:
+                self.logger.debug("%s: %s-%s" % (
+                    error.ErrorSeverity.pyval,
+                    error.ErrorCode.pyval,
+                    error.ErrorDescription.pyval,
+                    ))
 
     @property
     def access_request(self):
