@@ -364,7 +364,7 @@ class BaseAPIClient(object):
                     error.ErrorDescription.pyval,
                     ))
             else:
-                self.logger.debug("%s: %s-%s" % (
+                cls.logger.debug("%s: %s-%s" % (
                     error.ErrorSeverity.pyval,
                     error.ErrorCode.pyval,
                     error.ErrorDescription.pyval,
