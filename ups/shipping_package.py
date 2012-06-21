@@ -913,7 +913,7 @@ class ShipmentConfirm(BaseAPIClient):
             'ShipConfirm']
             )
 
-    def request(self, shipment_confirm_request):
+    def request(self, shipment_confirm_request, return_request=False):
         """Calls up UPS and send the request. Get the returned response
         and return an element built out of it.
 
@@ -929,13 +929,19 @@ class ShipmentConfirm(BaseAPIClient):
             ])
         self.logger.debug("Request XML: %s", full_request)
 
+            
         # Send the request
         result = self.send_request(self.url, full_request) 
         self.logger.debug("Response Received: %s", result)
 
         response = objectify.fromstring(result)
         self.look_for_error(response)
-        return response
+
+        # Return request ?
+        if return_request:
+            return full_request, response
+        else:
+            return response
 
     @classmethod
     def extract_digest(cls, response):
@@ -990,7 +996,7 @@ class ShipmentAccept(BaseAPIClient):
             'ShipAccept']
             )
 
-    def request(self, shipment_accept_request):
+    def request(self, shipment_accept_request, return_request=False):
         """Calls up UPS and send the request. Get the returned response
         and return an element built out of it.
 
@@ -1002,6 +1008,66 @@ class ShipmentAccept(BaseAPIClient):
             etree.tostring(self.access_request, pretty_print=True),
             '<?xml version="1.0" encoding="UTF-8" ?>',
             etree.tostring(shipment_accept_request, pretty_print=True),
+            ])
+        self.logger.debug("Request XML: %s", full_request)
+
+        # Send the request
+        result = self.send_request(self.url, full_request) 
+        self.logger.debug("Response Received: %s", result)
+
+        response =  objectify.fromstring(result)
+        self.look_for_error(response)
+        return response
+
+class ShipmentVoid(BaseAPIClient):
+    """Implements the VoidShipmentRequest"""
+
+    # Indicates the action to be taken by the XML service.
+    RequestAction = E.RequestAction('Void')
+
+    RequestOption = E.RequestOption('')
+
+    # TransactionReference identifies transactions between client and server.
+    TransactionReference = E.TransactionReference(
+        E.CustomerContext('unspecified')
+        )
+
+    @classmethod
+    def void_shipment_request_type(cls, shipment_id, tracking_ids):
+        """
+        """
+        # /ShipmentVoidRequest/Request
+        request = E.Request(
+            cls.RequestAction,
+            cls.RequestOption,
+            cls.TransactionReference,
+            )
+
+        expanded_void_shipment = [E.TrackingNumber(packet) for packet in tracking_ids]
+        expanded_void_shipment.insert(0, E.ShipmentIdentificationNumber(shipment_id))
+
+        return E.VoidShipmentRequest(request, E.ExpandedVoidShipment(*expanded_void_shipment))
+    
+    @property
+    def url(self):
+        """Concatenates the URL with the Base URL"""
+        return '/'.join([
+            self.base_url[self.sandbox and 'sandbox' or 'production'],
+            'VoidShipmentRequest']
+            )
+
+    def request(self, shipment_avoid_request):
+        """Calls up UPS and send the request. Get the returned response
+        and return an element built out of it.
+
+        :param shipment_confirm_request: lxml element with data for the 
+                                         `shipment_confirm_request`.
+        """
+        full_request = '\n'.join([
+            '<?xml version="1.0" encoding="UTF-8" ?>',
+            etree.tostring(self.access_request, pretty_print=True),
+            '<?xml version="1.0" encoding="UTF-8" ?>',
+            etree.tostring(shipment_avoid_request, pretty_print=True),
             ])
         self.logger.debug("Request XML: %s", full_request)
 
