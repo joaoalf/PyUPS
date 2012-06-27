@@ -11,4 +11,4 @@ __author__ = 'Openlabs Technologies & Consulting (P) LTD'
 __version__ = '0.4.2'
 
 
-from .shipping_package import ShipmentConfirm, ShipmentAccept, PyUPSException
+from .shipping_package import ShipmentConfirm, ShipmentAccept, ShipmentVoid, PyUPSException

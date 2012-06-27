@@ -347,7 +347,7 @@ class BaseAPIClient(object):
         return urllib2.urlopen(request).read()
 
     @classmethod
-    def look_for_error(cls, response):
+    def look_for_error(cls, response, request=None):
         """Looks for an element error and raises an :exception:`PyUPSException`
         out of it, which could be handled by applications using this API.
         """
@@ -356,13 +356,12 @@ class BaseAPIClient(object):
         except AttributeError:
             return None
         else:
-            print error.ErrorSeverity.pyval
             if error.ErrorSeverity.pyval != 'Warning':
                 raise PyUPSException("%s-%s:%s" % (
                     error.ErrorSeverity.pyval,
                     error.ErrorCode.pyval,
                     error.ErrorDescription.pyval,
-                    ))
+                    ), request, response)
             else:
                 cls.logger.debug("%s: %s-%s" % (
                     error.ErrorSeverity.pyval,
@@ -935,7 +934,7 @@ class ShipmentConfirm(BaseAPIClient):
         self.logger.debug("Response Received: %s", result)
 
         response = objectify.fromstring(result)
-        self.look_for_error(response)
+        self.look_for_error(response, full_request)
 
         # Return request ?
         if return_request:
@@ -1016,7 +1015,7 @@ class ShipmentAccept(BaseAPIClient):
         self.logger.debug("Response Received: %s", result)
 
         response =  objectify.fromstring(result)
-        self.look_for_error(response)
+        self.look_for_error(response, full_request)
         return response
 
 class ShipmentVoid(BaseAPIClient):
@@ -1056,18 +1055,18 @@ class ShipmentVoid(BaseAPIClient):
             'VoidShipmentRequest']
             )
 
-    def request(self, shipment_avoid_request):
+    def request(self, shipment_void_request):
         """Calls up UPS and send the request. Get the returned response
         and return an element built out of it.
 
-        :param shipment_confirm_request: lxml element with data for the 
-                                         `shipment_confirm_request`.
+        :param shipment_void_request: lxml element with data for the 
+                                      `shipment_void_request`.
         """
         full_request = '\n'.join([
             '<?xml version="1.0" encoding="UTF-8" ?>',
             etree.tostring(self.access_request, pretty_print=True),
             '<?xml version="1.0" encoding="UTF-8" ?>',
-            etree.tostring(shipment_avoid_request, pretty_print=True),
+            etree.tostring(shipment_void_request, pretty_print=True),
             ])
         self.logger.debug("Request XML: %s", full_request)
 
@@ -1076,8 +1075,8 @@ class ShipmentVoid(BaseAPIClient):
         self.logger.debug("Response Received: %s", result)
 
         response =  objectify.fromstring(result)
-        self.look_for_error(response)
-        return response
+        self.look_for_error(response, full_request)
+        return full_request, response
 
 
 if __name__ == '__main__':
