@@ -1016,7 +1016,11 @@ class ShipmentAccept(BaseAPIClient):
 
         response =  objectify.fromstring(result)
         self.look_for_error(response, full_request)
-        return response
+
+        if return_request:
+            return full_request, response
+        else:
+            return response
 
 class ShipmentVoid(BaseAPIClient):
     """Implements the VoidShipmentRequest"""
@@ -1052,10 +1056,10 @@ class ShipmentVoid(BaseAPIClient):
         """Concatenates the URL with the Base URL"""
         return '/'.join([
             self.base_url[self.sandbox and 'sandbox' or 'production'],
-            'VoidShipmentRequest']
+            'Void']
             )
 
-    def request(self, shipment_void_request):
+    def request(self, shipment_void_request, return_request=False):
         """Calls up UPS and send the request. Get the returned response
         and return an element built out of it.
 
@@ -1076,7 +1080,11 @@ class ShipmentVoid(BaseAPIClient):
 
         response =  objectify.fromstring(result)
         self.look_for_error(response, full_request)
-        return full_request, response
+
+        if return_request:
+            return full_request, response
+        else:
+            return response
 
 
 if __name__ == '__main__':
