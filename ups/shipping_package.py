@@ -768,6 +768,22 @@ class ShipmentConfirm(BaseAPIClient):
             E.Height(kwargs['Height']),
             )
 
+    @classmethod
+    def package_service_options_type(cls, *args, **kwargs):
+        """
+        :param InsuredValue: Generated from :meth:`insured_value_type`        
+        """
+
+        return E.PackageServiceOptions(*cls.make_elements(['InsuredValue'], args, kwargs))
+
+    @classmethod
+    def insured_value_type(cls, *args, **kwargs):
+        """
+        :param CurrencyCode: Currency Code
+        :param MonetaryValue: Monetary value
+        """
+        
+        return E.InsuredValue(*cls.make_elements(['MonetaryValue'], args, kwargs))
 
     @classmethod
     def package_type(cls, *args, **kwargs):
@@ -776,6 +792,7 @@ class ShipmentConfirm(BaseAPIClient):
         :param Description: Merchandise Description of the Package (Optional)
         :param PackageWeight: Generated from :meth:`package_weight_type`
         :param Dimensions: Generated from :meth:`dimensions_type`
+        :param PackageServiceOptions: Generated from :meth:`package_service_option_type`
         """
         elements = cls.make_elements(
             ['PackagingType', 'PackageWeight', 'Dimensions'], args, kwargs)
