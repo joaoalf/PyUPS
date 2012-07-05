@@ -362,12 +362,12 @@ class BaseAPIClient(object):
                     error.ErrorCode.pyval,
                     error.ErrorDescription.pyval,
                     ), request, response)
-            else:
-                cls.logger.debug("%s: %s-%s" % (
-                    error.ErrorSeverity.pyval,
-                    error.ErrorCode.pyval,
-                    error.ErrorDescription.pyval,
-                    ))
+            #else:
+            #    cls.logger.debug("%s: %s-%s" % (
+            #        error.ErrorSeverity.pyval,
+            #        error.ErrorCode.pyval,
+            #        error.ErrorDescription.pyval,
+            #        ))
 
     @property
     def access_request(self):
