@@ -12,29 +12,22 @@ from setuptools import setup
 import ups
 
 setup(
-    name = 'PyUPS',
-    version = ups.__version__,
-    license = 'AGPL',
-    author = ups.__author__,
-    author_email = 'info@openlabs.co.in',
-    url = 'http://openlabs.co.in',
-
-    description = "Python client to UPS® Shipping Webservice API",
-    long_description = __doc__,
-    keywords = "UPS®, Shipping, United Parcel Service of America®",
-
-    packages = [
+    name='PyUPS',
+    version=ups.__version__,
+    license='AGPL',
+    author=ups.__author__,
+    author_email='info@openlabs.co.in',
+    url='http://openlabs.co.in',
+    description="Python client to UPS® Shipping Webservice API",
+    long_description=__doc__,
+    keywords="UPS®, Shipping, United Parcel Service of America®",
+    packages=[
         'ups',
         'ups.tests',
         ],
-#    package_dir = {
-#        'ups': 'api',
-#        'ups.tests': 'tests',
-#        },
     install_requires=[
         'distribute',
         'lxml',
         'unittest2',
         ]
 )
-
