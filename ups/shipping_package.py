@@ -263,12 +263,14 @@ class BaseAPIClient(object):
     #: production servers or the sandbox servers provided by UPS
     sandbox = True
 
-    def __init__(self, license_no, user_id, password, sandbox):
+    def __init__(self, license_no, user_id, password, sandbox,
+                 return_xml=False):
         """ """
         self.license_no = license_no
         self.user_id = user_id
         self.password = password
         self.sandbox = sandbox
+        self.return_xml = return_xml
 
         #: Prepare the lazy setup of the logger.
         self._logger = None
@@ -363,12 +365,6 @@ class BaseAPIClient(object):
                     error.ErrorCode.pyval,
                     error.ErrorDescription.pyval,
                     ), request, response)
-            #else:
-            #    cls.logger.debug("%s: %s-%s" % (
-            #        error.ErrorSeverity.pyval,
-            #        error.ErrorCode.pyval,
-            #        error.ErrorDescription.pyval,
-            #        ))
 
     @property
     def access_request(self):
@@ -931,7 +927,7 @@ class ShipmentConfirm(BaseAPIClient):
             'ShipConfirm']
             )
 
-    def request(self, shipment_confirm_request, return_request=False):
+    def request(self, shipment_confirm_request):
         """Calls up UPS and send the request. Get the returned response
         and return an element built out of it.
 
@@ -955,7 +951,7 @@ class ShipmentConfirm(BaseAPIClient):
         self.look_for_error(response, full_request)
 
         # Return request ?
-        if return_request:
+        if self.return_xml:
             return full_request, response
         else:
             return response
@@ -1013,7 +1009,7 @@ class ShipmentAccept(BaseAPIClient):
             'ShipAccept']
             )
 
-    def request(self, shipment_accept_request, return_request=False):
+    def request(self, shipment_accept_request):
         """Calls up UPS and send the request. Get the returned response
         and return an element built out of it.
 
@@ -1035,7 +1031,7 @@ class ShipmentAccept(BaseAPIClient):
         response = objectify.fromstring(result)
         self.look_for_error(response, full_request)
 
-        if return_request:
+        if self.return_xml:
             return full_request, response
         else:
             return response
@@ -1084,7 +1080,7 @@ class ShipmentVoid(BaseAPIClient):
             'Void']
             )
 
-    def request(self, shipment_void_request, return_request=False):
+    def request(self, shipment_void_request):
         """Calls up UPS and send the request. Get the returned response
         and return an element built out of it.
 
@@ -1106,7 +1102,7 @@ class ShipmentVoid(BaseAPIClient):
         response = objectify.fromstring(result)
         self.look_for_error(response, full_request)
 
-        if return_request:
+        if self.return_xml:
             return full_request, response
         else:
             return response
